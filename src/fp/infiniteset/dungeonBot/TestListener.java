@@ -37,14 +37,14 @@ public class TestListener extends ListenerAdapter<PircBotX>
                 Pattern rollPattern = Pattern.compile("^!roll\\s+(\\d+)d(\\d+)");
                 Matcher rollMatcher = rollPattern.matcher(event.getMessage());
 
-                Pattern procPattern = Pattern.compile("\\s*(c?)\\s*([<>=])\\s*(\\d*)");
+                Pattern procPattern = Pattern.compile("\\s*([cs]?)\\s*([<>=])\\s*(\\d*)");
                 Matcher procMatcher = procPattern.matcher(event.getMessage());
 
                 ArrayList<Integer> rolls = new ArrayList<Integer>();
                 if (rollMatcher.find())
                 {
-                    int numRolls = Math.max(Integer.parseInt(rollMatcher.group(1)), 20);
-                    int max = Math.max(Integer.parseInt(rollMatcher.group(2)), 256);
+                    int numRolls = Math.min(Integer.parseInt(rollMatcher.group(1)), 20);
+                    int max = Math.min(Integer.parseInt(rollMatcher.group(2)), 256);
 
                     for (int i = 0; i < numRolls; i++)
                     {
@@ -109,8 +109,16 @@ public class TestListener extends ListenerAdapter<PircBotX>
         {
             public String execute(MessageEvent<PircBotX> event)
             {
-                characterMap.put(event.getUser().getNick(), new Character());
-                return "Generated a character for " + event.getUser().getNick();
+                String userNick = event.getUser().getNick();
+                if (characterMap.get(userNick) == null)
+                {
+                    characterMap.put(userNick, new Character());
+                    return "Generated a character for " + event.getUser().getNick();
+                }
+                else
+                {
+                    return userNick + " already has a character";
+                }
             }
         };
 
@@ -222,7 +230,8 @@ public class TestListener extends ListenerAdapter<PircBotX>
 
             //Connect to the freenode IRC network
             bot.startBot();
-        } //In your code you should catch and handle each exception seperately,
+        }
+        //In your code you should catch and handle each exception seperately,
         //but here we just lump them all togeather for simpliciy
         catch (Exception ex)
         {
