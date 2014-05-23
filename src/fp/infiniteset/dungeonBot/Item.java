@@ -6,3 +6,4 @@ public class Item
     protected int modifier;
     protected int power;
 }
+
