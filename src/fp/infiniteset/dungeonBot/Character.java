@@ -8,16 +8,14 @@ public class Character
     public static final long MS_TO_HOURS = 3600000;
 
     public int health;
-    public int attack;
-    public int defense;
+    public Weapon weapon;
     public long time;
 
-    public Character()
+    public Character(Weapon w)
     {
         Random rng = new Random();
         health  = rng.nextInt(10) + 5;
-        attack  = rng.nextInt(3) + 2;
-        defense = rng.nextInt(1) + 1;
+        weapon = w;
         time = 0;
     }
 
@@ -28,7 +26,7 @@ public class Character
 
     public void attack(Character target)
     {
-        target.health -= this.attack - target.defense;
+        target.health -= this.weapon.modifier;
     }
 }
 

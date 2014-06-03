@@ -4,6 +4,10 @@ public class Item
 {
     protected String baseName;
     protected int modifier;
-    protected int power;
+
+    public String toString()
+    {
+        return String.format("+%d %s", modifier, baseName);
+    }
 }
 

@@ -17,7 +17,6 @@ public class ItemGenerator
     public Weapon makeWeapon()
     {
         return new Weapon(adjectives.getRandomWord() + " Sword",
-                rng.nextInt(3),
                 rng.nextInt(2));
     }
 }

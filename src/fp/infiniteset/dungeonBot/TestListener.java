@@ -16,17 +16,21 @@ import java.util.HashMap;
 import java.util.Date;
 import java.util.Random;
 
+import java.io.FileNotFoundException;
+
 public class TestListener extends ListenerAdapter<PircBotX>
 {
     protected Random rng;
     protected String currentSetting;
+    protected ItemGenerator itemGen;
     protected HashMap<String, SimpleCommand> commandMap;
     protected HashMap<String, Character> characterMap;
 
-    public TestListener()
+    public TestListener() throws FileNotFoundException
     {
         rng = new Random();
         currentSetting = "";
+        itemGen = new ItemGenerator();
 
         characterMap = new HashMap<String, Character>();
 
@@ -112,7 +116,7 @@ public class TestListener extends ListenerAdapter<PircBotX>
                 String userNick = event.getUser().getNick();
                 if (characterMap.get(userNick) == null)
                 {
-                    characterMap.put(userNick, new Character());
+                    characterMap.put(userNick, new Character(itemGen.makeWeapon()));
                     return "Generated a character for " + event.getUser().getNick();
                 }
                 else
@@ -129,8 +133,8 @@ public class TestListener extends ListenerAdapter<PircBotX>
                 Character c = characterMap.get(event.getUser().getNick());
                 if (c != null)
                 {
-                    return String.format("Health[%d], Attack[%d], Defense[%d]",
-                            c.health, c.attack, c.defense);
+                    return String.format("Health[%d], Weapon[%s]",
+                            c.health, c.weapon.toString());
                 }
 
                 return "No character found for " + event.getUser().getNick();
@@ -164,7 +168,7 @@ public class TestListener extends ListenerAdapter<PircBotX>
                     return "No character found for " + target;
                 }
 
-                targetCharacter.health -= userCharacter.attack - targetCharacter.defense;
+                userCharacter.attack(targetCharacter);
                 return "attacks " + target + " " + targetCharacter.health;
             }
         };
